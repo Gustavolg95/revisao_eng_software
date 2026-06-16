@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engenharia de Software — Guia de Estudos</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --border: #334155;
+    --accent: #6366f1; --accent2: #818cf8; --text: #e2e8f0;
+    --muted: #94a3b8; --green: #22c55e; --yellow: #eab308;
+    --red: #ef4444; --blue: #38bdf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.6; }
+
+  header { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 24px; position: sticky; top: 0; z-index: 100; }
+  header h1 { font-size: 1.2rem; color: var(--accent2); }
+  header p { font-size: 0.8rem; color: var(--muted); }
+
+  /* TABS */
+  .tab-bar { display: flex; flex-wrap: wrap; gap: 4px; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 57px; z-index: 99; }
+  .tab-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; transition: all 0.15s; white-space: nowrap; }
+  .tab-btn:hover { border-color: var(--accent); color: var(--accent2); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+  /* CONTENT */
+  .tab-content { display: none; max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+  .tab-content.active { display: block; }
+
+  h2 { color: var(--accent2); font-size: 1.4rem; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+  h3 { color: var(--blue); font-size: 1rem; margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  h4 { color: var(--text); font-size: 0.95rem; margin: 14px 0 6px; font-weight: 600; }
+  p { margin-bottom: 10px; color: var(--text); }
+  ul, ol { margin: 8px 0 12px 20px; }
+  li { margin-bottom: 4px; color: var(--text); }
+  strong { color: var(--accent2); }
+  em { color: var(--yellow); font-style: normal; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
+  .card.green { border-left: 4px solid var(--green); }
+  .card.red { border-left: 4px solid var(--red); }
+  .card.yellow { border-left: 4px solid var(--yellow); }
+  .card.blue { border-left: 4px solid var(--blue); }
+  .card.purple { border-left: 4px solid var(--accent); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media(max-width:640px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .badge { display: inline-block; background: var(--accent); color: #fff; border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; margin: 2px; }
+  .badge.green { background: #166534; color: var(--green); }
+  .badge.red { background: #7f1d1d; color: var(--red); }
+  .badge.yellow { background: #713f12; color: var(--yellow); }
+  .badge.blue { background: #0c4a6e; color: var(--blue); }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 16px; font-size: 0.88rem; }
+  th { background: var(--accent); color: #fff; padding: 8px 12px; text-align: left; }
+  td { padding: 7px 12px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+
+  .pyramid { text-align: center; margin: 12px 0; }
+  .pyr-row { margin: 2px auto; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.82rem; font-weight: 600; color: #fff; }
+
+  /* QUESTÕES */
+  .question { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .question p.q { font-weight: 600; margin-bottom: 12px; color: var(--text); }
+  .question .opts label { display: block; padding: 8px 12px; margin: 5px 0; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); transition: all 0.15s; }
+  .question .opts label:hover { border-color: var(--accent); background: rgba(99,102,241,0.1); }
+  .question .opts input[type=radio] { margin-right: 8px; accent-color: var(--accent); }
+  .question .opts label.correct { border-color: var(--green) !important; background: rgba(34,197,94,0.12) !important; color: var(--green); }
+  .question .opts label.wrong { border-color: var(--red) !important; background: rgba(239,68,68,0.12) !important; color: var(--red); }
+  .question .opts label.reveal-correct { border-color: var(--green) !important; background: rgba(34,197,94,0.08) !important; }
+  .btn-check { background: var(--accent); color: #fff; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 0.88rem; margin-top: 10px; }
+  .btn-check:hover { background: var(--accent2); }
+  .explanation { margin-top: 10px; padding: 10px 14px; background: rgba(99,102,241,0.1); border-radius: 6px; font-size: 0.87rem; color: var(--muted); display: none; }
+  .score-bar { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; text-align: center; }
+  .score-bar span { font-size: 1.8rem; font-weight: 700; color: var(--accent2); }
+  #reset-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-left: 12px; }
+
+  .tip { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.3); border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 0.87rem; color: var(--yellow); }
+  .tip::before { content: "⚠ PROVA: "; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Engenharia de Software — CEUB</h1>
+  <p>Guia de estudos completo · 11 tópicos + questões de revisão</p>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="show('t1')">1. Sistemas de Informação</button>
+  <button class="tab-btn" onclick="show('t2')">2. Análise e Desenvolvimento</button>
+  <button class="tab-btn" onclick="show('t3')">3. Modelo Cascata</button>
+  <button class="tab-btn" onclick="show('t4')">4. Iterativo / RUP</button>
+  <button class="tab-btn" onclick="show('t5')">5. Modelos Ágeis / Scrum</button>
+  <button class="tab-btn" onclick="show('t6')">6. Requisitos</button>
+  <button class="tab-btn" onclick="show('t7')">7. Desenho</button>
+  <button class="tab-btn" onclick="show('t8')">8. Arquitetura</button>
+  <button class="tab-btn" onclick="show('t9')">9. Construção</button>
+  <button class="tab-btn" onclick="show('t10')">10. Qualidade</button>
+  <button class="tab-btn" onclick="show('t11')">11. Implantação e Manutenção</button>
+  <button class="tab-btn" onclick="show('tq')" style="background:rgba(99,102,241,0.2);border-color:var(--accent)">📝 Questões</button>
+</div>
+
+<!-- ===================== TAB 1 ===================== -->
+<div id="t1" class="tab-content active">
+  <h2>Sistemas de Informação</h2>
+
+  <h3>Definição de Sistema</h3>
+  <div class="card purple">
+    <p><strong>Sommerville:</strong> "Um sistema é uma coleção de componentes inter-relacionados que trabalham juntos para atingir um objetivo comum."</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h4>Sistema Físico (concreto)</h4>
+      <p>Existe fisicamente — ex: computador, carro, avião.</p>
+    </div>
+    <div class="card">
+      <h4>Sistema Abstrato</h4>
+      <p>Sem existência física — ex: modelo matemático, software.</p>
+    </div>
+  </div>
+
+  <h3>Composição de um Sistema de Informação</h3>
+  <div class="card blue">
+    <p style="text-align:center;font-size:1.05rem;">
+      <strong>ENTRADAS</strong> → <strong>PROCESSAMENTO</strong> → <strong>SAÍDAS</strong><br>
+      <span style="color:var(--muted);font-size:0.85rem;">↑_______________ FEEDBACK _______________↑</span>
+    </p>
+  </div>
+
+  <h3>Ecossistema de um SI — 5 Elementos</h3>
+  <div class="grid3">
+    <div class="card green"><h4>🖥 Hardware</h4><p>Componentes físicos: CPU, memória, armazenamento, periféricos.</p></div>
+    <div class="card green"><h4>💾 Software</h4><p>Programas e sistemas operacionais.</p></div>
+    <div class="card green"><h4>📊 Dados</h4><p>Matéria-prima do SI; transformados em informação.</p></div>
+    <div class="card green"><h4>🌐 Conectividade</h4><p>Redes que interligam os componentes.</p></div>
+    <div class="card green"><h4>👤 Pessoas</h4><p>Usuários, analistas, administradores.</p></div>
+  </div>
+
+  <h3>Tipos de Sistemas</h3>
+  <table>
+    <tr><th>Tipo</th><th>Característica</th><th>Exemplos</th></tr>
+    <tr><td><strong>Embutidos</strong></td><td>Controle de hardware, sem interface humana direta</td><td>Freios ABS, marcapasso</td></tr>
+    <tr><td><strong>Comerciais</strong></td><td>Atividades de negócio genéricas</td><td>ERP, CRM</td></tr>
+    <tr><td><strong>Sistemas de Informação</strong></td><td>Suporte à tomada de decisão</td><td>BI, sistemas gerenciais</td></tr>
+  </table>
+
+  <h3>Visão Organizacional — Pirâmide</h3>
+  <div class="pyramid">
+    <div class="pyr-row" style="width:160px;height:44px;background:#1e3a5f;">🔷 Estratégico</div>
+    <div class="pyr-row" style="width:260px;height:44px;background:#1a4a3a;">🔶 Tático</div>
+    <div class="pyr-row" style="width:380px;height:44px;background:#3a1a1a;">🔺 Operacional</div>
+  </div>
+  <ul>
+    <li><strong>Estratégico:</strong> alta gestão, decisões de longo prazo (ex: EIS, DSS)</li>
+    <li><strong>Tático:</strong> gerência média, controle e análise (ex: MIS)</li>
+    <li><strong>Operacional:</strong> rotina do dia-a-dia (ex: ERP, CRM, SPT)</li>
+  </ul>
+
+  <h3>Elementos de um Sistema</h3>
+  <div class="grid2">
+    <div class="card"><h4>Objetos</h4><p>Partes e componentes do sistema.</p></div>
+    <div class="card"><h4>Atividades</h4><p>Funções realizadas pelos objetos.</p></div>
+    <div class="card"><h4>Relações</h4><p>Ligações entre objetos e atividades.</p></div>
+    <div class="card"><h4>Fronteira (Boundary)</h4><p>O que está dentro ou fora do escopo.</p></div>
+  </div>
+
+  <div class="tip">Sistema Fechado não interage com o ambiente. Sistema Aberto troca informações com o exterior — SI são sistemas abertos.</div>
+</div>
+
+<!-- ===================== TAB 2 ===================== -->
+<div id="t2" class="tab-content">
+  <h2>Análise e Desenvolvimento de Sistemas</h2>
+
+  <h3>O que é ADS?</h3>
+  <div class="card purple">
+    <p>Área que estuda como criar software de qualidade de forma sistemática, controlada e eficiente.</p>
+  </div>
+
+  <h3>Crise do Software</h3>
+  <div class="card red">
+    <p>Surgiu no <em>final da década de 1960</em>. Problemas: projetos atrasados, acima do orçamento, sem qualidade e não atendiam requisitos. Cunhada na Conferência da OTAN (1968).</p>
+  </div>
+
+  <h3>Mitos do Software</h3>
+  <table>
+    <tr><th>Categoria</th><th>Mito</th><th>Realidade</th></tr>
+    <tr>
+      <td><strong>Administrativos</strong></td>
+      <td>"Basta adicionar mais programadores para recuperar atraso"</td>
+      <td>Mais pessoas = mais comunicação = mais atraso (Lei de Brooks)</td>
+    </tr>
+    <tr>
+      <td><strong>Cliente</strong></td>
+      <td>"Já sei o que quero; especificação detalhada depois"</td>
+      <td>Requisitos mal definidos são a principal causa de falha</td>
+    </tr>
+    <tr>
+      <td><strong>Profissional</strong></td>
+      <td>"Quando o programa funcionar, o trabalho está feito"</td>
+      <td>Manutenção consome 60-80% do custo total de um software</td>
+    </tr>
+    <tr>
+      <td><strong>Profissional</strong></td>
+      <td>"Posso usar software já pronto e adaptá-lo"</td>
+      <td>Reuso exige planejamento; adaptação pode custar mais</td>
+    </tr>
+  </table>
+
+  <h3>Análise vs Síntese</h3>
+  <div class="grid2">
+    <div class="card blue">
+      <h4>Análise</h4>
+      <p>Divisão do problema em partes menores para compreensão. Ex: decompor o sistema em módulos.</p>
+    </div>
+    <div class="card green">
+      <h4>Síntese</h4>
+      <p>Integração das partes em uma solução coesa. Ex: integrar módulos na solução final.</p>
+    </div>
+  </div>
+
+  <h3>Meios de Desenvolvimento</h3>
+  <div class="grid3">
+    <div class="card">
+      <h4>Método</h4>
+      <p>Abordagem sistemática — <em>como fazer</em>. Ex: Scrum, Waterfall.</p>
+    </div>
+    <div class="card">
+      <h4>Ferramenta</h4>
+      <p>Suporte automatizado — <em>com o que fazer</em>. Ex: IDE, ferramentas CASE.</p>
+    </div>
+    <div class="card">
+      <h4>Procedimento</h4>
+      <p>Sequência de passos — <em>o que fazer quando</em>. Ex: processo de revisão de código.</p>
+    </div>
+  </div>
+
+  <div class="tip">Crise do Software → final dos anos 60. Lei de Brooks: "adicionar mão de obra a um projeto atrasado o atrasa ainda mais."</div>
+</div>
+
+<!-- ===================== TAB 3 ===================== -->
+<div id="t3" class="tab-content">
+  <h2>Modelo Cascata e Processos</h2>
+
+  <h3>O que é Processo de Software?</h3>
+  <div class="card purple">
+    <p>Conjunto de atividades, métodos e práticas que guiam o desenvolvimento de software. Define <em>quem faz o quê, quando e como</em>.</p>
+    <p>Inclui: produtos (artefatos), papéis e restrições de pré/pós-condições.</p>
+  </div>
+
+  <h3>Modelo Caótico — "Go Horse" ⚠</h3>
+  <div class="card red">
+    <p><strong>NÃO É um modelo válido.</strong> Também chamado de "Cowboy Coding". Desenvolvimento sem planejamento, documentação ou processos. Altamente disfuncional.</p>
+    <p>Postulatos do Go Horse: "Primeiro faço, depois penso", "Se funciona, não mexa", etc.</p>
+  </div>
+
+  <h3>Modelo Cascata (Waterfall)</h3>
+  <div class="card blue">
+    <p><strong>Criado por Winston Royce (1970).</strong> Modelo linear e sequencial — cada fase deve ser concluída antes da próxima iniciar.</p>
+  </div>
+
+  <div style="margin: 14px 0;">
+    <div style="background:#1e3a5f;padding:8px 16px;border-radius:6px;margin:3px 0;">1. Definição de Requisitos</div>
+    <div style="text-align:center;color:var(--muted);">↓</div>
+    <div style="background:#1a3a2e;padding:8px 16px;border-radius:6px;margin:3px 0;">2. Projeto de Sistema</div>
+    <div style="text-align:center;color:var(--muted);">↓</div>
+    <div style="background:#2e2a1a;padding:8px 16px;border-radius:6px;margin:3px 0;">3. Implementação</div>
+    <div style="text-align:center;color:var(--muted);">↓</div>
+    <div style="background:#2e1a1a;padding:8px 16px;border-radius:6px;margin:3px 0;">4. Testes (Integração e Verificação)</div>
+    <div style="text-align:center;color:var(--muted);">↓</div>
+    <div style="background:#2a1a3a;padding:8px 16px;border-radius:6px;margin:3px 0;">5. Operação e Manutenção</div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px;">
+    <div class="card green">
+      <h4>✅ Vantagens</h4>
+      <ul>
+        <li>Simples de entender e gerenciar</li>
+        <li>Documentação clara em cada fase</li>
+        <li>Bom para requisitos bem definidos e estáveis</li>
+        <li>Controle de qualidade por fases</li>
+      </ul>
+    </div>
+    <div class="card red">
+      <h4>❌ Desvantagens</h4>
+      <ul>
+        <li>Mudanças de requisitos são caras</li>
+        <li>Cliente só vê o produto no final</li>
+        <li>Difícil voltar fases anteriores</li>
+        <li>Não reflete o desenvolvimento real</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Variações do Cascata</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Modelo V</h4>
+      <p>Cada fase de desenvolvimento tem uma fase de teste correspondente. Verificação e validação são planejadas junto com o desenvolvimento.</p>
+      <p>Codificação ↔ Teste Unitário | Design ↔ Teste de Integração | Análise ↔ Teste de Aceitação</p>
+    </div>
+    <div class="card">
+      <h4>Prototipação</h4>
+      <p>Criação de protótipos para validar requisitos antes do desenvolvimento completo. Reduz riscos de mal-entendidos. Protótipo pode ser descartável ou evolutivo.</p>
+    </div>
+  </div>
+
+  <div class="tip">O Royce criou o Cascata em 1970. Modelo V é extensão do Cascata com foco em testes. Go Horse NÃO é um modelo de processo válido.</div>
+</div>
+
+<!-- ===================== TAB 4 ===================== -->
+<div id="t4" class="tab-content">
+  <h2>Modelo Iterativo, Incremental e RUP</h2>
+
+  <h3>Iterativo vs Incremental</h3>
+  <div class="grid2">
+    <div class="card blue">
+      <h4>Iterativo</h4>
+      <p>Refina e melhora o produto através de ciclos repetidos. O sistema completo é desenvolvido em cada iteração, melhorando progressivamente. <em>"Versões cada vez mais completas."</em></p>
+    </div>
+    <div class="card green">
+      <h4>Incremental</h4>
+      <p>Entrega partes funcionais do sistema separadamente. Cada incremento adiciona novas funcionalidades. <em>"Partes do sistema entregues progressivamente."</em></p>
+    </div>
+  </div>
+  <div class="card yellow">
+    <p>Na prática, os modelos modernos combinam ambas as abordagens: cada ciclo (iteração) entrega um incremento funcional do sistema.</p>
+  </div>
+
+  <h3>Modelo Espiral (Boehm, 1988)</h3>
+  <div class="card purple">
+    <p>Combina prototipação e cascata. A cada espiral: <strong>Planejamento → Análise de Riscos → Engenharia → Avaliação</strong>. Foco em gestão de riscos. Bom para projetos grandes e complexos.</p>
+  </div>
+
+  <h3>RUP / UP — Processo Unificado</h3>
+  <div class="card blue">
+    <p><strong>Rational Unified Process</strong> — criado por Kruchten (1995), baseado no UML. Processo iterativo e incremental, orientado a casos de uso, centrado na arquitetura.</p>
+  </div>
+
+  <h4>4 Fases do RUP</h4>
+  <table>
+    <tr><th>Fase</th><th>Objetivo Principal</th><th>Marco</th></tr>
+    <tr>
+      <td><strong>Concepção (Inception)</strong></td>
+      <td>Escopo, viabilidade, casos de negócio, principais riscos</td>
+      <td>Objetivo do ciclo de vida</td>
+    </tr>
+    <tr>
+      <td><strong>Elaboração</strong></td>
+      <td>Análise do problema, arquitetura base, eliminação dos principais riscos</td>
+      <td>Arquitetura do ciclo de vida</td>
+    </tr>
+    <tr>
+      <td><strong>Construção</strong></td>
+      <td>Desenvolvimento iterativo, implementação de todos os casos de uso</td>
+      <td>Capacidade operacional inicial</td>
+    </tr>
+    <tr>
+      <td><strong>Transição</strong></td>
+      <td>Entrega ao usuário final, testes beta, treinamento, correções finais</td>
+      <td>Lançamento do produto</td>
+    </tr>
+  </table>
+
+  <h3>Disciplinas do RUP</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Engenharia</h4>
+      <ul>
+        <li>Modelagem de negócio</li>
+        <li>Requisitos</li>
+        <li>Análise e Design</li>
+        <li>Implementação</li>
+        <li>Teste</li>
+        <li>Implantação</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Suporte</h4>
+      <ul>
+        <li>Gerência de configuração</li>
+        <li>Gerência de projeto</li>
+        <li>Ambiente</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Boas Práticas do RUP</h3>
+  <ul>
+    <li>Desenvolver software iterativamente</li>
+    <li>Gerenciar requisitos continuamente</li>
+    <li>Usar arquitetura baseada em componentes</li>
+    <li>Modelar software visualmente (UML)</li>
+    <li>Verificar a qualidade continuamente</li>
+    <li>Controlar mudanças no software</li>
+  </ul>
+
+  <div class="tip">RUP = Kruchten 1995, 4 fases (Concepção → Elaboração → Construção → Transição). Espiral = Boehm 1988, foco em riscos.</div>
+</div>
+
+<!-- ===================== TAB 5 ===================== -->
+<div id="t5" class="tab-content">
+  <h2>Modelos Ágeis e Scrum</h2>
+
+  <h3>Manifesto Ágil (2001)</h3>
+  <div class="card purple">
+    <p>Publicado em fevereiro de 2001 por <em>17 profissionais</em> em Snowbird, Utah. Base filosófica do desenvolvimento ágil.</p>
+  </div>
+
+  <h4>4 Valores</h4>
+  <div class="grid2">
+    <div class="card blue">
+      <p><strong>Indivíduos e interações</strong> sobre processos e ferramentas</p>
+    </div>
+    <div class="card blue">
+      <p><strong>Software funcionando</strong> sobre documentação abrangente</p>
+    </div>
+    <div class="card blue">
+      <p><strong>Colaboração com o cliente</strong> sobre negociação de contratos</p>
+    </div>
+    <div class="card blue">
+      <p><strong>Responder a mudanças</strong> sobre seguir um plano</p>
+    </div>
+  </div>
+  <p style="color:var(--muted);font-size:0.85rem;">* Os itens à direita têm valor, mas os à esquerda são mais valorizados.</p>
+
+  <h4>12 Princípios (resumidos)</h4>
+  <ol>
+    <li>Satisfazer o cliente com entregas contínuas e antecipadas de software</li>
+    <li>Aceitar mudanças de requisitos, mesmo tarde no desenvolvimento</li>
+    <li>Entregar software funcionando frequentemente (semanas, não meses)</li>
+    <li>Clientes e desenvolvedores devem trabalhar juntos diariamente</li>
+    <li>Construir projetos em torno de indivíduos motivados</li>
+    <li>Conversa face a face é a comunicação mais eficiente</li>
+    <li>Software funcionando é a medida de progresso</li>
+    <li>Processos ágeis promovem desenvolvimento sustentável</li>
+    <li>Atenção contínua à excelência técnica e bom design</li>
+    <li>Simplicidade — maximizar o trabalho não realizado</li>
+    <li>Times auto-organizáveis geram melhores arquiteturas</li>
+    <li>Reflexão regular sobre como se tornar mais eficaz</li>
+  </ol>
+
+  <h3>Metodologias Ágeis</h3>
+  <div class="grid3">
+    <div class="card"><h4>Scrum</h4><p>Framework para gestão de projetos complexos.</p></div>
+    <div class="card"><h4>XP (Extreme Programming)</h4><p>Práticas técnicas: TDD, pair programming, refatoração.</p></div>
+    <div class="card"><h4>FDD</h4><p>Feature Driven Development — desenvolvimento guiado por funcionalidades.</p></div>
+    <div class="card"><h4>MSF</h4><p>Microsoft Solutions Framework.</p></div>
+    <div class="card"><h4>DSDM</h4><p>Dynamic Systems Development Method.</p></div>
+  </div>
+
+  <h3>SCRUM — Framework Detalhado</h3>
+
+  <h4>3 Pilares</h4>
+  <div class="grid3">
+    <div class="card blue"><h4>Transparência</h4><p>Todos os aspectos do processo devem ser visíveis aos responsáveis.</p></div>
+    <div class="card blue"><h4>Inspeção</h4><p>Artefatos e progresso inspecionados frequentemente.</p></div>
+    <div class="card blue"><h4>Adaptação</h4><p>Ajuste de processo quando há desvio inaceitável.</p></div>
+  </div>
+
+  <h4>Time Scrum</h4>
+  <table>
+    <tr><th>Papel</th><th>Responsabilidades</th></tr>
+    <tr>
+      <td><strong>Product Owner (PO)</strong></td>
+      <td>Representa o negócio/cliente. Gerencia o Product Backlog. Prioriza o que será desenvolvido. Define o "quê".</td>
+    </tr>
+    <tr>
+      <td><strong>Scrum Master (SM)</strong></td>
+      <td>Guardião do Scrum. Remove impedimentos. Facilita cerimônias. Protege o time. Não é chefe.</td>
+    </tr>
+    <tr>
+      <td><strong>Equipe de Desenvolvimento</strong></td>
+      <td>Auto-organizada, cross-funcional. Entrega o incremento. 3-9 pessoas. Define o "como".</td>
+    </tr>
+  </table>
+
+  <h4>Eventos Scrum</h4>
+  <table>
+    <tr><th>Evento</th><th>Duração</th><th>Objetivo</th></tr>
+    <tr><td><strong>Sprint</strong></td><td>1 a 4 semanas</td><td>Iteração principal. Cria incremento "Pronto".</td></tr>
+    <tr><td><strong>Sprint Planning</strong></td><td>Até 8h (Sprint 4sem)</td><td>O que será feito? Como será feito?</td></tr>
+    <tr><td><strong>Daily Scrum</strong></td><td>15 minutos</td><td>O que fiz? O que farei? Há impedimentos?</td></tr>
+    <tr><td><strong>Sprint Review</strong></td><td>Até 4h (Sprint 4sem)</td><td>Inspeciona o incremento com stakeholders.</td></tr>
+    <tr><td><strong>Sprint Retrospective</strong></td><td>Até 3h (Sprint 4sem)</td><td>Melhoria do processo do time.</td></tr>
+  </table>
+
+  <h4>Artefatos Scrum</h4>
+  <div class="grid3">
+    <div class="card green">
+      <h4>Product Backlog</h4>
+      <p>Lista ordenada de tudo que o produto precisará. Única fonte de requisitos. Gerenciado pelo PO.</p>
+    </div>
+    <div class="card green">
+      <h4>Sprint Backlog</h4>
+      <p>Itens do Product Backlog selecionados para a Sprint + plano de como entregá-los.</p>
+    </div>
+    <div class="card green">
+      <h4>Definição de Pronto (DoD)</h4>
+      <p>Critérios compartilhados do que significa "pronto". Garante transparência e qualidade.</p>
+    </div>
+  </div>
+
+  <div class="tip">Scrum: 3 pilares (TIA), 3 papéis (PO/SM/Dev), 5 eventos (Sprint/Planning/Daily/Review/Retro), 3 artefatos (Product Backlog/Sprint Backlog/Incremento). Sprint = 1 a 4 semanas. Daily = 15min.</div>
+</div>
+
+<!-- ===================== TAB 6 ===================== -->
+<div id="t6" class="tab-content">
+  <h2>Requisitos de Software</h2>
+
+  <h3>Definições</h3>
+  <div class="card purple">
+    <p><strong>Sommerville:</strong> "Descrições do que o sistema deve fazer — os serviços que oferece e as restrições a seu funcionamento."</p>
+    <p><strong>Pleeger:</strong> "Uma condição ou capacidade que o sistema deve ter para satisfazer um contrato, padrão ou especificação."</p>
+  </div>
+
+  <h3>Classificação — Pirâmide</h3>
+  <div class="pyramid">
+    <div class="pyr-row" style="width:180px;height:44px;background:#1e3a5f;">Requisito de Negócio</div>
+    <div class="pyr-row" style="width:280px;height:44px;background:#1a4a3a;">Requisito de Usuário</div>
+    <div class="pyr-row" style="width:400px;height:44px;background:#3a2a1a;">Requisito de Sistema</div>
+  </div>
+  <ul>
+    <li><strong>Negócio:</strong> objetivos de alto nível da organização. Ex: "Aumentar vendas online em 20%"</li>
+    <li><strong>Usuário:</strong> o que o usuário espera fazer com o sistema. Ex: "Quero pesquisar produtos"</li>
+    <li><strong>Sistema:</strong> especificação detalhada do que o software deve fazer.</li>
+  </ul>
+
+  <h3>Tipos de Requisitos</h3>
+  <div class="grid2">
+    <div class="card blue">
+      <h4>Funcionais (RF)</h4>
+      <p>O que o sistema <strong>faz</strong>. Descrevem funcionalidades, serviços, comportamentos.</p>
+      <p>Ex: "O sistema deve permitir login com email e senha."</p>
+    </div>
+    <div class="card yellow">
+      <h4>Não-Funcionais (RNF)</h4>
+      <p>Restrições sobre o <strong>como</strong>. Qualidade, desempenho, segurança, usabilidade.</p>
+      <p>Ex: "O sistema deve responder em menos de 2 segundos."</p>
+    </div>
+  </div>
+
+  <h4>Subtipos de RNF</h4>
+  <div class="grid3">
+    <div class="card"><h4>Produto</h4><p>Desempenho, confiabilidade, portabilidade, usabilidade.</p></div>
+    <div class="card"><h4>Organizacionais</h4><p>Padrões, processos de desenvolvimento usados.</p></div>
+    <div class="card"><h4>Externos</h4><p>Legais, regulatórios, éticos, interoperabilidade.</p></div>
+  </div>
+
+  <h3>Engenharia de Requisitos — Processo</h3>
+  <div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap;">
+    <div style="background:#1e293b;border:1px solid var(--accent);padding:8px 14px;border-radius:6px;text-align:center;flex:1;min-width:100px;">
+      <div style="font-size:0.75rem;color:var(--muted);">1</div><strong>Levantamento</strong>
+    </div>
+    <div style="color:var(--muted);padding-top:20px;">→</div>
+    <div style="background:#1e293b;border:1px solid var(--accent);padding:8px 14px;border-radius:6px;text-align:center;flex:1;min-width:100px;">
+      <div style="font-size:0.75rem;color:var(--muted);">2</div><strong>Análise</strong>
+    </div>
+    <div style="color:var(--muted);padding-top:20px;">→</div>
+    <div style="background:#1e293b;border:1px solid var(--accent);padding:8px 14px;border-radius:6px;text-align:center;flex:1;min-width:100px;">
+      <div style="font-size:0.75rem;color:var(--muted);">3</div><strong>Especificação</strong>
+    </div>
+    <div style="color:var(--muted);padding-top:20px;">→</div>
+    <div style="background:#1e293b;border:1px solid var(--accent);padding:8px 14px;border-radius:6px;text-align:center;flex:1;min-width:100px;">
+      <div style="font-size:0.75rem;color:var(--muted);">4</div><strong>Validação</strong>
+    </div>
+  </div>
+
+  <h3>Técnicas de Levantamento</h3>
+  <ul>
+    <li><strong>Entrevistas:</strong> estruturadas ou não. Direta com stakeholders.</li>
+    <li><strong>Questionários:</strong> para grande número de usuários dispersos.</li>
+    <li><strong>Observação:</strong> analista observa o ambiente de trabalho.</li>
+    <li><strong>Workshops/JAD:</strong> sessões colaborativas com stakeholders.</li>
+    <li><strong>Análise de documentos:</strong> estudar documentos existentes.</li>
+    <li><strong>Prototipação:</strong> criar modelo parcial para validar entendimento.</li>
+    <li><strong>Brainstorming:</strong> geração livre de ideias.</li>
+    <li><strong>Cenários / User Stories:</strong> descrição narrativa de como o sistema será usado.</li>
+  </ul>
+
+  <h3>Características de um Bom Requisito</h3>
+  <div class="grid2">
+    <div class="card green">
+      <ul>
+        <li>✅ <strong>Completo:</strong> contém todas as informações necessárias</li>
+        <li>✅ <strong>Correto:</strong> representa com precisão a necessidade</li>
+        <li>✅ <strong>Consistente:</strong> não conflita com outros requisitos</li>
+        <li>✅ <strong>Não ambíguo:</strong> apenas uma interpretação possível</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <ul>
+        <li>✅ <strong>Verificável:</strong> pode ser testado</li>
+        <li>✅ <strong>Rastreável:</strong> origem identificada</li>
+        <li>✅ <strong>Modificável:</strong> pode ser alterado com facilidade</li>
+        <li>✅ <strong>Priorizável:</strong> tem grau de importância</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Problemas Comuns nos Requisitos</h3>
+  <div class="grid3">
+    <div class="card red"><h4>Escopo</h4><p>Objetivos mal definidos ou escopo inflado desnecessariamente.</p></div>
+    <div class="card red"><h4>Entendimento</h4><p>Cliente não sabe comunicar o que precisa; analista mal interpreta.</p></div>
+    <div class="card red"><h4>Volatilidade</h4><p>Requisitos mudam com frequência durante o desenvolvimento.</p></div>
+  </div>
+
+  <div class="tip">RF = o que o sistema FAZ. RNF = como o sistema SE COMPORTA. Pirâmide: Negócio → Usuário → Sistema (do topo à base).</div>
+</div>
+
+<!-- ===================== TAB 7 ===================== -->
+<div id="t7" class="tab-content">
+  <h2>Desenho / Modelagem de Software</h2>
+
+  <h3>Definição</h3>
+  <div class="card purple">
+    <p>Processo de <strong>traduzir os requisitos</strong> (o quê) em uma <strong>representação de como</strong> o sistema será construído. É a ponte entre análise e implementação.</p>
+    <p>Envolve tomada de decisões sobre estrutura, algoritmos e interfaces.</p>
+  </div>
+
+  <h3>Visões do Desenho</h3>
+  <div class="grid2">
+    <div class="card blue">
+      <h4>Visão Conceitual</h4>
+      <p>O que o sistema faz do ponto de vista do problema. Independente de tecnologia. Ex: Diagrama de Casos de Uso, modelos de domínio.</p>
+    </div>
+    <div class="card green">
+      <h4>Visão Técnica</h4>
+      <p>Como o sistema será construído. Focada em solução. Ex: Diagramas de Classe, Sequência, Arquitetura.</p>
+    </div>
+  </div>
+
+  <h3>Conceitos Fundamentais</h3>
+  <table>
+    <tr><th>Conceito</th><th>Descrição</th></tr>
+    <tr><td><strong>Abstração</strong></td><td>Foco nos aspectos essenciais, ignorando detalhes não relevantes para o nível atual.</td></tr>
+    <tr><td><strong>Refinamento</strong></td><td>Processo inverso da abstração — elaborar detalhes progressivamente (top-down).</td></tr>
+    <tr><td><strong>Modularização</strong></td><td>Divisão do sistema em partes independentes (módulos) com interfaces definidas.</td></tr>
+    <tr><td><strong>Hierarquia de controle</strong></td><td>Organização dos módulos em estrutura hierárquica — quem controla quem.</td></tr>
+    <tr><td><strong>Ocultamento de informação</strong></td><td>Encapsulamento — detalhes internos não ficam expostos (information hiding).</td></tr>
+    <tr><td><strong>Independência funcional</strong></td><td>Módulos com função única e bem definida, com mínima dependência entre si.</td></tr>
+  </table>
+
+  <h3>Modelos Técnicos</h3>
+  <div class="grid3">
+    <div class="card purple">
+      <h4>Modelo de Arquitetura</h4>
+      <p>Estrutura macro do sistema. Define componentes principais e como se comunicam. Ex: Diagrama de Componentes, Implantação.</p>
+    </div>
+    <div class="card blue">
+      <h4>Modelo de Procedimentos</h4>
+      <p>Como as funções são executadas internamente. Sequência de ações. Ex: Diagrama de Sequência, Atividades, Fluxogramas.</p>
+    </div>
+    <div class="card green">
+      <h4>Modelo de Dados</h4>
+      <p>Estrutura e organização dos dados. Ex: Diagrama ER, Diagrama de Classes (atributos).</p>
+    </div>
+  </div>
+
+  <h3>Arquitetura em Camadas</h3>
+  <div style="margin:12px 0;">
+    <div style="background:#1e3a5f;padding:10px 16px;border-radius:6px;margin:4px 0;text-align:center;"><strong>Apresentação (UI)</strong> — Interface com usuário</div>
+    <div style="background:#1a4a3a;padding:10px 16px;border-radius:6px;margin:4px 0;text-align:center;"><strong>Negócio (Business Logic)</strong> — Regras e processamento</div>
+    <div style="background:#2e2a1a;padding:10px 16px;border-radius:6px;margin:4px 0;text-align:center;"><strong>Dados (Persistence)</strong> — Acesso ao banco de dados</div>
+  </div>
+
+  <div class="tip">Abstração = visão de alto nível (esconde detalhes). Refinamento = detalhar progressivamente. Modularização = dividir para conquistar.</div>
+</div>
+
+<!-- ===================== TAB 8 ===================== -->
+<div id="t8" class="tab-content">
+  <h2>Arquitetura de Software</h2>
+
+  <h3>Definições</h3>
+  <div class="card purple">
+    <p><strong>Bass et al.:</strong> "A arquitetura de software de um sistema é a estrutura (ou estruturas) do sistema, que compreende os elementos de software, as propriedades externamente visíveis desses elementos e os relacionamentos entre eles."</p>
+    <p><strong>IEEE 1471:</strong> Organização fundamental de um sistema, incorporada em seus componentes, nos relacionamentos entre si e com o ambiente, e os princípios que guiam seu design e evolução.</p>
+  </div>
+
+  <h3>Conceitos: Serviço, Componente, Módulo</h3>
+  <table>
+    <tr><th>Conceito</th><th>Definição</th><th>Exemplo</th></tr>
+    <tr><td><strong>Módulo</strong></td><td>Unidade de implementação com interface definida (código)</td><td>Classe Java, arquivo Python</td></tr>
+    <tr><td><strong>Componente</strong></td><td>Unidade de software implantável e substituível com interface contratual</td><td>JAR, DLL, container Docker</td></tr>
+    <tr><td><strong>Serviço</strong></td><td>Componente acessível pela rede com contrato bem definido (API)</td><td>REST API, microserviço</td></tr>
+  </table>
+
+  <h3>Influência nos Requisitos Não-Funcionais</h3>
+  <p>A arquitetura afeta diretamente:</p>
+  <div class="grid3">
+    <div class="card"><h4>🔒 Segurança</h4><p>Camadas de autorização, isolamento de componentes sensíveis.</p></div>
+    <div class="card"><h4>⚡ Desempenho</h4><p>Cache, balanceamento de carga, comunicação assíncrona.</p></div>
+    <div class="card"><h4>📈 Escalabilidade</h4><p>Horizontal (mais servidores) ou vertical (mais recursos).</p></div>
+    <div class="card"><h4>🔧 Manutenibilidade</h4><p>Separação de responsabilidades facilita mudanças.</p></div>
+    <div class="card"><h4>✅ Disponibilidade</h4><p>Redundância, failover, replicação.</p></div>
+    <div class="card"><h4>🔄 Interoperabilidade</h4><p>Protocolos e contratos padronizados.</p></div>
+  </div>
+
+  <h3>Padrões / Estilos Arquiteturais</h3>
+
+  <div class="card blue">
+    <h4>Cliente-Servidor</h4>
+    <p>Clientes requisitam serviços a servidores. Separação clara entre quem consome e quem provê. Ex: navegador/servidor web.</p>
+  </div>
+
+  <div class="card green">
+    <h4>MVC — Model-View-Controller</h4>
+    <p><strong>Model:</strong> dados e regras de negócio. <strong>View:</strong> apresentação (UI). <strong>Controller:</strong> intermediário que processa entrada do usuário e atualiza Model/View. Separa responsabilidades.</p>
+  </div>
+
+  <div class="card yellow">
+    <h4>Multicamada (N-Tier)</h4>
+    <p>Divisão em camadas: Apresentação, Lógica de Negócio, Dados. Cada camada só se comunica com a adjacente. Variante do MVC com foco em implantação física.</p>
+  </div>
+
+  <div class="card purple">
+    <h4>SOA — Arquitetura Orientada a Serviços</h4>
+    <p>Sistema composto por serviços independentes que se comunicam por interfaces padronizadas (SOAP/REST). Altamente reutilizável e integrável. Base para Microserviços.</p>
+  </div>
+
+  <h3>Boas Práticas Arquiteturais</h3>
+  <ul>
+    <li>Separação de responsabilidades (Separation of Concerns)</li>
+    <li>Baixo acoplamento entre componentes</li>
+    <li>Alta coesão dentro dos componentes</li>
+    <li>Documentar decisões arquiteturais (ADR)</li>
+    <li>Considerar requisitos não-funcionais desde o início</li>
+    <li>Preferir composição a herança excessiva</li>
+  </ul>
+
+  <div class="tip">MVC = separação UI/Lógica/Dados. SOA = serviços com contratos padronizados. Arquitetura impacta TODOS os RNF (desempenho, segurança, manutenibilidade...).</div>
+</div>
+
+<!-- ===================== TAB 9 ===================== -->
+<div id="t9" class="tab-content">
+  <h2>Construção / Implementação</h2>
+
+  <h3>O que é Construção?</h3>
+  <div class="card purple">
+    <p>Fase onde o design é convertido em código executável. Envolve programação, testes unitários, integração e depuração. É a fase mais longa e cara do desenvolvimento.</p>
+  </div>
+
+  <h3>Algoritmos</h3>
+  <div class="grid2">
+    <div class="card blue">
+      <h4>Fluxograma</h4>
+      <p>Representação gráfica do algoritmo usando símbolos padronizados:</p>
+      <ul>
+        <li>⬭ Oval: Início/Fim</li>
+        <li>▭ Retângulo: Processo/Instrução</li>
+        <li>◇ Losango: Decisão (if/else)</li>
+        <li>▱ Paralelogramo: Entrada/Saída</li>
+        <li>→ Setas: Fluxo de controle</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h4>Pseudocódigo</h4>
+      <p>Descrição textual informal do algoritmo, usando linguagem próxima do humano mas com estrutura de código. Independente de linguagem de programação.</p>
+    </div>
+  </div>
+
+  <h3>Métodos de Programação por Época</h3>
+  <table>
+    <tr><th>Método</th><th>Período</th><th>Conceito Central</th></tr>
+    <tr><td><strong>Lógica</strong></td><td>Anos 50-60</td><td>Código sequencial, sem estrutura. Assembly, Fortran.</td></tr>
+    <tr><td><strong>Orientada a Dados</strong></td><td>Anos 60-70</td><td>Foco na estrutura dos dados (COBOL, estruturas de dados).</td></tr>
+    <tr><td><strong>Estruturada</strong></td><td>Anos 70-80</td><td>Sequência, seleção, repetição. Eliminar GOTO. Pascal, C.</td></tr>
+    <tr><td><strong>Orientada a Objetos</strong></td><td>Anos 80-hoje</td><td>Encapsulamento, Herança, Polimorfismo. C++, Java, Python.</td></tr>
+  </table>
+
+  <h3>Pilares da OO</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Encapsulamento</h4><p>Ocultamento de detalhes internos. Acesso via interface pública.</p>
+    </div>
+    <div class="card">
+      <h4>Herança</h4><p>Reutilização de características de classes pai em classes filha.</p>
+    </div>
+    <div class="card">
+      <h4>Polimorfismo</h4><p>Mesmo método com comportamentos diferentes em classes distintas.</p>
+    </div>
+    <div class="card">
+      <h4>Abstração</h4><p>Modelar apenas o que é relevante para o contexto.</p>
+    </div>
+  </div>
+
+  <h3>Reutilização de Software</h3>
+  <div class="grid3">
+    <div class="card blue">
+      <h4>Nível de Aplicação</h4>
+      <p>Reutilizar sistemas inteiros. Ex: usar um ERP existente em vez de desenvolver do zero.</p>
+    </div>
+    <div class="card blue">
+      <h4>Nível de Componente</h4>
+      <p>Reutilizar subsistemas ou módulos. Ex: bibliotecas, frameworks, APIs.</p>
+    </div>
+    <div class="card blue">
+      <h4>Nível de Objeto/Função</h4>
+      <p>Reutilizar classes, funções isoladas. Menor granularidade.</p>
+    </div>
+  </div>
+
+  <h3>Gerência de Configuração</h3>
+  <ul>
+    <li>Controle de versão (Git, SVN)</li>
+    <li>Gerência de releases</li>
+    <li>Controle de mudanças</li>
+    <li>Auditoria e status</li>
+  </ul>
+
+  <div class="tip">Métodos de programação: Lógica → Dados → Estruturada → OO (cronológico). OO = 4 pilares: Encapsulamento, Herança, Polimorfismo, Abstração.</div>
+</div>
+
+<!-- ===================== TAB 10 ===================== -->
+<div id="t10" class="tab-content">
+  <h2>Qualidade de Software</h2>
+
+  <h3>Meta Principal: Baixo Acoplamento + Alta Coesão</h3>
+  <div class="grid2">
+    <div class="card red">
+      <h4>⬇ Acoplamento — quanto menor, melhor</h4>
+      <p>Grau de <strong>dependência entre módulos</strong>. Alto acoplamento = mudança em um módulo afeta muitos outros. Dificulta manutenção e testes.</p>
+    </div>
+    <div class="card green">
+      <h4>⬆ Coesão — quanto maior, melhor</h4>
+      <p>Grau em que os elementos de um módulo <strong>pertencem juntos</strong>. Alta coesão = módulo faz uma coisa bem. Facilita manutenção e reutilização.</p>
+    </div>
+  </div>
+
+  <h3>Tipos de Acoplamento (do pior para o melhor)</h3>
+  <table>
+    <tr><th>Tipo</th><th>Descrição</th><th>Qualidade</th></tr>
+    <tr><td><strong>Conteúdo</strong></td><td>Módulo acessa diretamente o interior de outro</td><td><span class="badge red">Péssimo</span></td></tr>
+    <tr><td><strong>Comum</strong></td><td>Compartilham variáveis globais</td><td><span class="badge red">Muito ruim</span></td></tr>
+    <tr><td><strong>Externo</strong></td><td>Dependem de formatos externos (arquivo, protocolo)</td><td><span class="badge yellow">Ruim</span></td></tr>
+    <tr><td><strong>Controle</strong></td><td>Um passa flags de controle para outro</td><td><span class="badge yellow">Médio</span></td></tr>
+    <tr><td><strong>Stamp (carimbo)</strong></td><td>Passam estruturas de dados (parte não usada)</td><td><span class="badge yellow">Aceitável</span></td></tr>
+    <tr><td><strong>Dados</strong></td><td>Passam apenas dados simples necessários (parâmetros)</td><td><span class="badge green">Ótimo</span></td></tr>
+  </table>
+
+  <h3>Tipos de Coesão (da pior para a melhor)</h3>
+  <table>
+    <tr><th>Tipo</th><th>Descrição</th><th>Qualidade</th></tr>
+    <tr><td><strong>Coincidental</strong></td><td>Elementos agrupados por acaso, sem relação</td><td><span class="badge red">Péssima</span></td></tr>
+    <tr><td><strong>Lógica</strong></td><td>Atividades do mesmo tipo geral (ex: todas as I/O)</td><td><span class="badge red">Ruim</span></td></tr>
+    <tr><td><strong>Temporal</strong></td><td>Atividades executadas no mesmo momento (ex: inicialização)</td><td><span class="badge yellow">Fraca</span></td></tr>
+    <tr><td><strong>Procedural</strong></td><td>Atividades em sequência de execução</td><td><span class="badge yellow">Média</span></td></tr>
+    <tr><td><strong>Comunicacional</strong></td><td>Atividades que operam nos mesmos dados</td><td><span class="badge yellow">Boa</span></td></tr>
+    <tr><td><strong>Sequencial</strong></td><td>Saída de uma atividade é entrada da próxima</td><td><span class="badge green">Muito boa</span></td></tr>
+    <tr><td><strong>Funcional</strong></td><td>Todos os elementos contribuem para uma única função bem definida</td><td><span class="badge green">Ideal</span></td></tr>
+  </table>
+
+  <h3>Tratamento de Exceções</h3>
+  <div class="card yellow">
+    <ul>
+      <li>Exceções devem ser tratadas no nível adequado (onde há contexto para tratar)</li>
+      <li>Não usar exceções para controle de fluxo normal</li>
+      <li>Logar informações suficientes para diagnóstico</li>
+      <li>Nunca capturar exceção genérica e ignorar silenciosamente</li>
+      <li>Restaurar estado consistente após exceção</li>
+    </ul>
+  </div>
+
+  <h3>Defeito vs Falha</h3>
+  <div class="grid2">
+    <div class="card blue">
+      <h4>Defeito (Fault/Bug)</h4>
+      <p>Problema no código-fonte. Pode existir sem jamais se manifestar se o trecho não for executado.</p>
+    </div>
+    <div class="card red">
+      <h4>Falha (Failure)</h4>
+      <p>Manifestação observável de um defeito em tempo de execução. O sistema não se comporta conforme esperado.</p>
+    </div>
+  </div>
+  <div class="card">
+    <p><strong>Erro</strong> → causa humana → gera <strong>Defeito</strong> no código → ativado em execução → produz <strong>Falha</strong> visível ao usuário.</p>
+  </div>
+
+  <div class="tip">Acoplamento: Conteúdo (pior) → Dados (melhor). Coesão: Coincidental (pior) → Funcional (melhor). Meta: baixo acoplamento + alta coesão.</div>
+</div>
+
+<!-- ===================== TAB 11 ===================== -->
+<div id="t11" class="tab-content">
+  <h2>Implantação e Manutenção</h2>
+
+  <h3>Implantação (Deployment)</h3>
+  <div class="card purple">
+    <p>Fase de entrega do software ao ambiente de produção e aos usuários finais. Inclui instalação, configuração, testes finais, treinamento e documentação.</p>
+  </div>
+
+  <h4>Treinamento</h4>
+  <div class="grid2">
+    <div class="card blue">
+      <h4>Treinamento do Usuário Final</h4>
+      <p>Foca nas funcionalidades do dia-a-dia. Como usar as telas, cadastros, relatórios. Linguagem acessível, exemplos práticos do contexto do usuário.</p>
+    </div>
+    <div class="card green">
+      <h4>Treinamento do Operador</h4>
+      <p>Foca na operação técnica do sistema. Backup, monitoramento, restart de serviços, gestão de usuários. Linguagem mais técnica.</p>
+    </div>
+  </div>
+
+  <h4>Tipos de Documentação</h4>
+  <table>
+    <tr><th>Tipo</th><th>Público</th><th>Conteúdo</th></tr>
+    <tr><td><strong>Manual do Usuário</strong></td><td>Usuário final</td><td>Como usar o sistema no dia-a-dia</td></tr>
+    <tr><td><strong>Manual do Operador</strong></td><td>TI / Suporte</td><td>Instalação, configuração, manutenção técnica</td></tr>
+    <tr><td><strong>Documentação Técnica</strong></td><td>Desenvolvedores</td><td>Arquitetura, APIs, banco de dados, código</td></tr>
+    <tr><td><strong>Manual de Treinamento</strong></td><td>Instrutores</td><td>Material didático para capacitação</td></tr>
+  </table>
+
+  <h3>Manutenção de Software</h3>
+  <div class="card purple">
+    <p><strong>IEEE:</strong> "Modificação de um produto de software após a entrega para corrigir falhas, melhorar desempenho ou outros atributos, ou adaptar o produto a um ambiente modificado."</p>
+    <p>A manutenção consome <em>60 a 80% do custo total</em> de um software ao longo de sua vida útil.</p>
+  </div>
+
+  <h4>4 Tipos de Manutenção</h4>
+  <table>
+    <tr><th>Tipo</th><th>Gatilho</th><th>Exemplo</th></tr>
+    <tr>
+      <td><strong>Corretiva</strong></td>
+      <td>Correção de defeitos/falhas já existentes</td>
+      <td>Corrigir bug que causa crash no login</td>
+    </tr>
+    <tr>
+      <td><strong>Adaptativa</strong></td>
+      <td>Mudanças no ambiente externo</td>
+      <td>Migrar para novo SO, nova versão do BD, nova legislação</td>
+    </tr>
+    <tr>
+      <td><strong>Perfectiva (Evolutiva)</strong></td>
+      <td>Novas funcionalidades ou melhorias</td>
+      <td>Adicionar módulo de relatórios, melhorar performance</td>
+    </tr>
+    <tr>
+      <td><strong>Preventiva</strong></td>
+      <td>Evitar problemas futuros</td>
+      <td>Refatorar código antes que vire problema, melhorar documentação</td>
+    </tr>
+  </table>
+
+  <h3>Tipos de Sistema — Lehman</h3>
+  <div class="grid3">
+    <div class="card blue">
+      <h4>Sistema S (Specified)</h4>
+      <p>Definido completamente por uma especificação formal. Ex: algoritmo matemático. Não muda.</p>
+    </div>
+    <div class="card yellow">
+      <h4>Sistema P (Problem)</h4>
+      <p>Resolução de um problema do mundo real. Pode ser refinado mas o problema é estável.</p>
+    </div>
+    <div class="card green">
+      <h4>Sistema E (Embedded)</h4>
+      <p>Embutido no mundo real; evolui conforme o ambiente muda. Ex: sistemas de negócio. Sujeito às Leis de Lehman.</p>
+    </div>
+  </div>
+
+  <h3>Manutenibilidade</h3>
+  <p>Facilidade com que um software pode ser modificado. Fatores:</p>
+  <ul>
+    <li><strong>Compreensibilidade:</strong> quão fácil é entender o código</li>
+    <li><strong>Testabilidade:</strong> quão fácil é testar mudanças</li>
+    <li><strong>Modificabilidade:</strong> quão fácil é implementar mudanças</li>
+  </ul>
+
+  <h3>Rejuvenescimento de Software</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Reestruturação</h4>
+      <p>Reorganizar o código sem mudar funcionalidade. Ex: refatoração, eliminar código duplicado.</p>
+    </div>
+    <div class="card">
+      <h4>Redocumentação</h4>
+      <p>Criar ou atualizar documentação sem alterar o código.</p>
+    </div>
+    <div class="card">
+      <h4>Engenharia Reversa</h4>
+      <p>Analisar código existente para recuperar design e especificação. "De volta ao início."</p>
+    </div>
+    <div class="card">
+      <h4>Reengenharia</h4>
+      <p>Reestruturação + Redocumentação + possíveis mudanças funcionais. Reconstruir sobre base existente.</p>
+    </div>
+  </div>
+
+  <div class="tip">4 tipos de manutenção: Corretiva (bugs), Adaptativa (ambiente), Perfectiva (melhorias), Preventiva (prevenir problemas). Manutenção = 60-80% do custo de vida do software.</div>
+</div>
+
+<!-- ===================== QUESTÕES ===================== -->
+<div id="tq" class="tab-content">
+  <h2>📝 Questões de Revisão</h2>
+  <p style="color:var(--muted);margin-bottom:20px;">Selecione a resposta e clique em "Verificar" para ver o gabarito e explicação.</p>
+
+  <div class="score-bar">
+    <div>Pontuação: <span id="score">0</span> / <span id="total">0</span></div>
+    <button id="reset-btn" onclick="resetAll()">↺ Reiniciar</button>
+  </div>
+
+  <div id="questions-container"></div>
+</div>
+
+<script>
+// ===================== TABS =====================
+function show(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ===================== QUESTIONS =====================
+const questions = [
+  // SISTEMAS DE INFORMAÇÃO
+  {
+    topic: "Sistemas de Informação",
+    q: "Segundo Sommerville, sistema é uma coleção de componentes inter-relacionados que trabalham juntos para:",
+    opts: ["Executar código eficientemente","Atingir um objetivo comum","Armazenar e recuperar dados","Conectar usuários à internet"],
+    correct: 1,
+    exp: "Definição clássica de Sommerville: sistema = componentes inter-relacionados trabalhando juntos para atingir um objetivo comum."
+  },
+  {
+    topic: "Sistemas de Informação",
+    q: "Qual dos seguintes NÃO faz parte do ecossistema de um Sistema de Informação?",
+    opts: ["Hardware","Software","Dados","Orçamento"],
+    correct: 3,
+    exp: "O ecossistema é composto por 5 elementos: Hardware, Software, Dados, Conectividade e Pessoas. Orçamento não é um elemento do ecossistema."
+  },
+  {
+    topic: "Sistemas de Informação",
+    q: "Na pirâmide organizacional, qual nível é responsável pelas decisões de longo prazo da organização?",
+    opts: ["Operacional","Tático","Estratégico","Gerencial"],
+    correct: 2,
+    exp: "O nível Estratégico (topo da pirâmide) é responsável pelas decisões de longo prazo, voltado à alta gestão."
+  },
+  {
+    topic: "Sistemas de Informação",
+    q: "Um sistema de freios ABS é um exemplo de qual tipo de sistema?",
+    opts: ["Sistema de Informação","Sistema Comercial","Sistema Embutido","Sistema Abstrato"],
+    correct: 2,
+    exp: "Sistemas Embutidos controlam hardware e geralmente não têm interface humana direta. O ABS é um exemplo clássico."
+  },
+  {
+    topic: "Sistemas de Informação",
+    q: "A composição de um Sistema de Informação segue o modelo:",
+    opts: ["Planejamento → Execução → Controle","Entradas → Processamento → Saídas (com Feedback)","Análise → Projeto → Testes","Hardware → Software → Dados"],
+    correct: 1,
+    exp: "O modelo básico de SI é: Entradas → Processamento → Saídas, com Feedback retornando ao início do ciclo."
+  },
+
+  // ANÁLISE E DESENVOLVIMENTO
+  {
+    topic: "Análise e Desenvolvimento",
+    q: "A 'Crise do Software' surgiu em qual período?",
+    opts: ["Anos 50","Final dos anos 60","Anos 80","Anos 90"],
+    correct: 1,
+    exp: "A Crise do Software surgiu no final dos anos 60, evidenciada na Conferência da OTAN de 1968."
+  },
+  {
+    topic: "Análise e Desenvolvimento",
+    q: "A Lei de Brooks afirma que:",
+    opts: ["Mais testes = menos bugs","Adicionar programadores a projeto atrasado o atrasa mais","Software sem documentação é mais rápido","Refatoração resolve todos os problemas"],
+    correct: 1,
+    exp: "Lei de Brooks: 'Adicionar mão de obra a um projeto de software atrasado o torna ainda mais atrasado', pois aumenta o overhead de comunicação."
+  },
+  {
+    topic: "Análise e Desenvolvimento",
+    q: "Qual a diferença entre Método, Ferramenta e Procedimento?",
+    opts: [
+      "São sinônimos no contexto de ES",
+      "Método = como fazer; Ferramenta = com o que fazer; Procedimento = o que fazer quando",
+      "Método = linguagem; Ferramenta = IDE; Procedimento = teste",
+      "Ferramenta = processo; Método = técnica; Procedimento = artefato"
+    ],
+    correct: 1,
+    exp: "Método define a abordagem (como), Ferramenta oferece suporte automatizado (com o quê), e Procedimento define a sequência de passos (quando)."
+  },
+  {
+    topic: "Análise e Desenvolvimento",
+    q: "O processo de dividir um problema em partes menores para melhor compreendê-lo é chamado de:",
+    opts: ["Síntese","Abstração","Análise","Refinamento"],
+    correct: 2,
+    exp: "Análise = decompor o problema. Síntese = integrar as partes em solução. São processos complementares."
+  },
+
+  // MODELO CASCATA
+  {
+    topic: "Modelo Cascata",
+    q: "O Modelo Cascata foi proposto por:",
+    opts: ["Barry Boehm em 1988","Kruchten em 1995","Winston Royce em 1970","Sommerville em 1985"],
+    correct: 2,
+    exp: "O Modelo Cascata foi proposto por Winston Royce em 1970, tornando-se o primeiro modelo formal de processo de software."
+  },
+  {
+    topic: "Modelo Cascata",
+    q: "Qual é a principal desvantagem do Modelo Cascata?",
+    opts: [
+      "Falta de documentação",
+      "Dificulta o uso de equipes grandes",
+      "Cliente só vê o produto no final e mudanças tardias são caras",
+      "Não define fases claras"
+    ],
+    correct: 2,
+    exp: "No Cascata, o produto final só é entregue ao cliente ao término de todas as fases, e retroceder para corrigir requisitos é muito caro."
+  },
+  {
+    topic: "Modelo Cascata",
+    q: "O 'Go Horse' (Cowboy Coding) é:",
+    opts: [
+      "Um modelo ágil válido para times pequenos",
+      "Variação do Cascata para projetos urgentes",
+      "Não é um modelo — representa desenvolvimento caótico sem processos",
+      "Modelo iterativo informal"
+    ],
+    correct: 2,
+    exp: "Go Horse NÃO é um modelo de processo válido. Representa desenvolvimento sem planejamento, documentação ou processos — é caótico e disfuncional."
+  },
+  {
+    topic: "Modelo Cascata",
+    q: "No Modelo V, qual é a relação entre as fases?",
+    opts: [
+      "São executadas em paralelo",
+      "Cada fase de desenvolvimento corresponde a uma fase de teste",
+      "As fases se repetem ciclicamente",
+      "O V representa velocidade de entrega"
+    ],
+    correct: 1,
+    exp: "No Modelo V, cada fase de desenvolvimento (esquerda do V) tem uma fase de teste correspondente (direita do V), planejadas simultaneamente."
+  },
+
+  // ITERATIVO / RUP
+  {
+    topic: "Iterativo e RUP",
+    q: "No Modelo Espiral de Boehm, qual é o foco principal?",
+    opts: ["Velocidade de entrega","Gestão de riscos","Redução de documentação","Equipes distribuídas"],
+    correct: 1,
+    exp: "O Modelo Espiral (Boehm, 1988) é caracterizado pelo foco em análise e gestão de riscos em cada ciclo da espiral."
+  },
+  {
+    topic: "Iterativo e RUP",
+    q: "Qual a ordem correta das fases do RUP?",
+    opts: [
+      "Elaboração → Concepção → Construção → Transição",
+      "Concepção → Elaboração → Construção → Transição",
+      "Construção → Elaboração → Concepção → Transição",
+      "Concepção → Construção → Elaboração → Transição"
+    ],
+    correct: 1,
+    exp: "As 4 fases do RUP em ordem são: Concepção (Inception) → Elaboração → Construção → Transição."
+  },
+  {
+    topic: "Iterativo e RUP",
+    q: "A diferença entre abordagem Iterativa e Incremental é:",
+    opts: [
+      "São idênticas, apenas nomes diferentes",
+      "Iterativa refina versões; Incremental adiciona partes funcionais novas",
+      "Incremental é mais rápida que iterativa",
+      "Iterativa usa sprints; Incremental usa fases"
+    ],
+    correct: 1,
+    exp: "Iterativo = ciclos que refinam o produto inteiro. Incremental = cada ciclo entrega uma nova parte funcional. Modelos modernos combinam ambos."
+  },
+
+  // MODELOS ÁGEIS / SCRUM
+  {
+    topic: "Modelos Ágeis / Scrum",
+    q: "O Manifesto Ágil foi criado em:",
+    opts: ["1995 por Kruchten","2001 por 17 profissionais em Snowbird","1999 por Kent Beck","2005 pela Agile Alliance"],
+    correct: 1,
+    exp: "O Manifesto Ágil foi assinado em fevereiro de 2001 por 17 profissionais reunidos em Snowbird, Utah."
+  },
+  {
+    topic: "Modelos Ágeis / Scrum",
+    q: "Quais são os 3 pilares do Scrum?",
+    opts: [
+      "Planejamento, Execução, Revisão",
+      "Transparência, Inspeção, Adaptação",
+      "Velocidade, Qualidade, Entrega",
+      "Sprint, Daily, Retrospectiva"
+    ],
+    correct: 1,
+    exp: "Os 3 pilares do Scrum são: Transparência (todos veem o processo), Inspeção (verificação frequente) e Adaptação (ajuste quando necessário)."
+  },
+  {
+    topic: "Modelos Ágeis / Scrum",
+    q: "Qual é o papel do Scrum Master?",
+    opts: [
+      "Gerenciar o Product Backlog e priorizar funcionalidades",
+      "Tomar decisões técnicas de arquitetura",
+      "Facilitar o processo Scrum e remover impedimentos",
+      "Representar os interesses do cliente"
+    ],
+    correct: 2,
+    exp: "O Scrum Master é o guardião do Scrum: facilita cerimônias, remove impedimentos e protege o time. NÃO é gerente de projeto."
+  },
+  {
+    topic: "Modelos Ágeis / Scrum",
+    q: "A Daily Scrum tem duração máxima de:",
+    opts: ["30 minutos","1 hora","15 minutos","45 minutos"],
+    correct: 2,
+    exp: "A Daily Scrum (reunião diária) é limitada a 15 minutos. As 3 perguntas: o que fiz? o que farei? há impedimentos?"
+  },
+  {
+    topic: "Modelos Ágeis / Scrum",
+    q: "O Product Backlog é:",
+    opts: [
+      "Lista de bugs encontrados no sprint",
+      "Lista ordenada de tudo que o produto precisa, gerenciada pelo PO",
+      "Plano do sprint atual selecionado pelo time",
+      "Relatório de progresso do projeto"
+    ],
+    correct: 1,
+    exp: "Product Backlog é a lista ordenada e priorizada de TUDO que o produto precisará. É a única fonte de requisitos e é gerenciada pelo Product Owner."
+  },
+  {
+    topic: "Modelos Ágeis / Scrum",
+    q: "Uma Sprint tem duração de:",
+    opts: ["1 dia a 1 semana","1 a 4 semanas","1 a 3 meses","2 semanas fixamente"],
+    correct: 1,
+    exp: "A Sprint tem duração de 1 a 4 semanas (time box fixo). A duração é definida pelo time e mantida consistente."
+  },
+  {
+    topic: "Modelos Ágeis / Scrum",
+    q: "Qual evento Scrum tem como objetivo inspecionar o incremento com os stakeholders?",
+    opts: ["Sprint Planning","Daily Scrum","Sprint Review","Sprint Retrospective"],
+    correct: 2,
+    exp: "Sprint Review: inspeciona o incremento produzido com stakeholders. Sprint Retrospective: inspeciona o processo do time. São eventos diferentes!"
+  },
+
+  // REQUISITOS
+  {
+    topic: "Requisitos",
+    q: "Requisitos Não-Funcionais descrevem:",
+    opts: [
+      "O que o sistema deve fazer",
+      "Restrições sobre como o sistema se comporta (desempenho, segurança, usabilidade)",
+      "Erros que o sistema não deve cometer",
+      "Funcionalidades opcionais do sistema"
+    ],
+    correct: 1,
+    exp: "RNF descrevem restrições e qualidades do sistema (como se comporta), não o que faz. Ex: tempo de resposta < 2s, disponibilidade 99,9%."
+  },
+  {
+    topic: "Requisitos",
+    q: "Na pirâmide de classificação de requisitos, qual nível representa os objetivos de alto nível da organização?",
+    opts: ["Sistema","Usuário","Negócio","Funcional"],
+    correct: 2,
+    exp: "Requisito de Negócio (topo da pirâmide) = objetivos estratégicos da organização. Usuário = o que o usuário quer fazer. Sistema = especificação detalhada."
+  },
+  {
+    topic: "Requisitos",
+    q: "Uma característica de um bom requisito é ser 'verificável'. Isso significa:",
+    opts: [
+      "Ter sido verificado pelo analista",
+      "Pode ser testado para confirmar se foi implementado corretamente",
+      "Foi verificado por mais de um stakeholder",
+      "Está na lista de requisitos verificados"
+    ],
+    correct: 1,
+    exp: "Verificável = possível de testar. Um requisito como 'o sistema deve ser rápido' não é verificável. 'Resposta em < 2s' é verificável."
+  },
+  {
+    topic: "Requisitos",
+    q: "Qual técnica de levantamento de requisitos envolve a criação de um modelo parcial para validar o entendimento?",
+    opts: ["Entrevista","Questionário","Prototipação","Brainstorming"],
+    correct: 2,
+    exp: "Prototipação cria modelos parciais do sistema para validar requisitos, reduzindo mal-entendidos entre analistas e clientes."
+  },
+
+  // DESENHO
+  {
+    topic: "Desenho / Modelagem",
+    q: "Qual conceito de desenho se refere a focar nos aspectos essenciais ignorando detalhes não relevantes?",
+    opts: ["Modularização","Refinamento","Abstração","Hierarquia"],
+    correct: 2,
+    exp: "Abstração = focar no essencial, ignorar detalhes irrelevantes para o nível atual. Refinamento é o inverso: ir do geral ao específico."
+  },
+  {
+    topic: "Desenho / Modelagem",
+    q: "O Modelo de Procedimentos no contexto de Desenho descreve:",
+    opts: [
+      "A estrutura macro do sistema",
+      "A organização dos dados",
+      "Como as funções são executadas internamente (sequência de ações)",
+      "Quais componentes compõem o sistema"
+    ],
+    correct: 2,
+    exp: "Modelo de Procedimentos = como as funções executam (fluxo, sequência). Exemplos: Diagrama de Sequência, Diagrama de Atividades."
+  },
+
+  // ARQUITETURA
+  {
+    topic: "Arquitetura",
+    q: "No padrão MVC, qual é a função do Controller?",
+    opts: [
+      "Armazenar os dados da aplicação",
+      "Renderizar a interface gráfica",
+      "Intermediar a entrada do usuário, atualizando Model e View",
+      "Gerenciar o banco de dados"
+    ],
+    correct: 2,
+    exp: "Controller = intermediário. Processa a entrada do usuário, atualiza o Model (dados) e determina qual View exibir. Model = dados, View = UI."
+  },
+  {
+    topic: "Arquitetura",
+    q: "SOA (Service-Oriented Architecture) é caracterizada por:",
+    opts: [
+      "Código monolítico altamente otimizado",
+      "Serviços independentes que se comunicam por interfaces padronizadas",
+      "Um único banco de dados centralizado",
+      "Interface gráfica responsiva"
+    ],
+    correct: 1,
+    exp: "SOA = sistema composto por serviços independentes com contratos bem definidos (SOAP/REST). Facilita reutilização e integração. Base para microserviços."
+  },
+  {
+    topic: "Arquitetura",
+    q: "A arquitetura de software influencia diretamente qual tipo de requisito?",
+    opts: ["Apenas requisitos funcionais","Apenas requisitos de negócio","Requisitos não-funcionais (desempenho, segurança, escalabilidade)","Apenas requisitos de usuário"],
+    correct: 2,
+    exp: "A arquitetura impacta diretamente os RNF: desempenho, segurança, manutenibilidade, escalabilidade, disponibilidade. Esta é uma razão chave para escolhê-la bem."
+  },
+
+  // CONSTRUÇÃO
+  {
+    topic: "Construção / Implementação",
+    q: "Na evolução dos métodos de programação, qual foi a sequência cronológica correta?",
+    opts: [
+      "OO → Estruturada → Dados → Lógica",
+      "Lógica → Dados → Estruturada → OO",
+      "Estruturada → Lógica → OO → Dados",
+      "Dados → OO → Estruturada → Lógica"
+    ],
+    correct: 1,
+    exp: "Cronologia: Lógica (50-60), Orientada a Dados (60-70), Estruturada (70-80), Orientada a Objetos (80-hoje)."
+  },
+  {
+    topic: "Construção / Implementação",
+    q: "O símbolo de losango em um fluxograma representa:",
+    opts: ["Início ou Fim","Processo ou instrução","Decisão (if/else)","Entrada ou Saída de dados"],
+    correct: 2,
+    exp: "Em fluxogramas: Oval = início/fim, Retângulo = processo, Losango = decisão, Paralelogramo = entrada/saída."
+  },
+
+  // QUALIDADE
+  {
+    topic: "Qualidade",
+    q: "Qual é a meta ideal de qualidade em design de software?",
+    opts: [
+      "Alto acoplamento e baixa coesão",
+      "Baixo acoplamento e alta coesão",
+      "Alto acoplamento e alta coesão",
+      "Baixo acoplamento e baixa coesão"
+    ],
+    correct: 1,
+    exp: "Meta: BAIXO acoplamento (menos dependência entre módulos) + ALTA coesão (módulo faz uma coisa bem). Esta combinação facilita manutenção e reutilização."
+  },
+  {
+    topic: "Qualidade",
+    q: "O tipo de acoplamento mais problemático (pior) é o:",
+    opts: ["Acoplamento de Dados","Acoplamento de Controle","Acoplamento de Conteúdo","Acoplamento Stamp"],
+    correct: 2,
+    exp: "Acoplamento de Conteúdo (pior): um módulo acessa diretamente o interior de outro. Hierarquia: Conteúdo (pior) → Comum → Externo → Controle → Stamp → Dados (melhor)."
+  },
+  {
+    topic: "Qualidade",
+    q: "A coesão Funcional é considerada:",
+    opts: ["A pior forma de coesão","Aceitável mas não ideal","A melhor forma de coesão","Equivalente à coesão coincidental"],
+    correct: 2,
+    exp: "Coesão Funcional (melhor): todos os elementos contribuem para uma única função bem definida. Hierarquia: Coincidental (pior) → ... → Sequencial → Funcional (melhor)."
+  },
+  {
+    topic: "Qualidade",
+    q: "Qual a diferença entre Defeito e Falha?",
+    opts: [
+      "São sinônimos no contexto de qualidade",
+      "Defeito é no código (pode não se manifestar); Falha é a manifestação observável em execução",
+      "Falha é no código; Defeito é o que o usuário vê",
+      "Defeito é causado por hardware; Falha por software"
+    ],
+    correct: 1,
+    exp: "Erro humano → Defeito (fault/bug no código) → Falha (failure: comportamento incorreto observável em execução). O defeito pode existir sem jamais gerar uma falha."
+  },
+
+  // IMPLANTAÇÃO E MANUTENÇÃO
+  {
+    topic: "Implantação e Manutenção",
+    q: "Qual tipo de manutenção é realizada para corrigir bugs já reportados pelos usuários?",
+    opts: ["Adaptativa","Preventiva","Perfectiva","Corretiva"],
+    correct: 3,
+    exp: "Manutenção Corretiva = corrigir defeitos/falhas existentes. Adaptativa = mudança de ambiente. Perfectiva = melhorias. Preventiva = evitar problemas futuros."
+  },
+  {
+    topic: "Implantação e Manutenção",
+    q: "Uma empresa precisa atualizar seu sistema porque o governo mudou as regras de cálculo de impostos. Que tipo de manutenção é essa?",
+    opts: ["Corretiva","Adaptativa","Perfectiva","Preventiva"],
+    correct: 1,
+    exp: "Manutenção Adaptativa = mudanças no ambiente externo (novos sistemas, nova legislação, novo hardware/SO). Não é um bug, é uma adaptação ao mundo real."
+  },
+  {
+    topic: "Implantação e Manutenção",
+    q: "Na classificação de Lehman, sistemas E (Embedded) são aqueles que:",
+    opts: [
+      "Podem ser completamente especificados formalmente",
+      "Resolvem um problema bem definido e estável",
+      "Estão embutidos no mundo real e evoluem conforme o ambiente muda",
+      "São sistemas de tempo real críticos"
+    ],
+    correct: 2,
+    exp: "Sistema E (Embedded in the world): embutido no ambiente real e sujeito às leis de Lehman. Sistemas de negócio são tipo E — mudam porque o mundo muda."
+  },
+  {
+    topic: "Implantação e Manutenção",
+    q: "A 'Engenharia Reversa' no contexto de rejuvenescimento de software consiste em:",
+    opts: [
+      "Reescrever o sistema do zero",
+      "Analisar o código existente para recuperar design e especificação",
+      "Criar documentação sem alterar o código",
+      "Reorganizar o código melhorando sua estrutura"
+    ],
+    correct: 1,
+    exp: "Engenharia Reversa = partir do código para recuperar o design e a especificação. É diferente de Reengenharia (que modifica) e Reestruturação (que reorganiza)."
+  },
+  {
+    topic: "Implantação e Manutenção",
+    q: "Quanto do custo total de vida de um software é tipicamente atribuído à manutenção?",
+    opts: ["10 a 20%","30 a 40%","60 a 80%","Mais de 90%"],
+    correct: 2,
+    exp: "A manutenção consome entre 60 e 80% do custo total do software ao longo de sua vida — mais do que o desenvolvimento inicial."
+  }
+];
+
+// ===================== RENDER QUESTIONS =====================
+function renderQuestions() {
+  const container = document.getElementById('questions-container');
+  document.getElementById('total').textContent = questions.length;
+
+  let grouped = {};
+  questions.forEach((q, i) => {
+    if (!grouped[q.topic]) grouped[q.topic] = [];
+    grouped[q.topic].push({...q, idx: i});
+  });
+
+  let html = '';
+  for (const [topic, qs] of Object.entries(grouped)) {
+    html += `<h3 style="margin:28px 0 12px;">${topic}</h3>`;
+    qs.forEach(q => {
+      html += `
+      <div class="question" id="q${q.idx}">
+        <p class="q">${q.idx+1}. ${q.q}</p>
+        <div class="opts">
+          ${q.opts.map((opt, oi) => `
+            <label id="lbl${q.idx}_${oi}">
+              <input type="radio" name="q${q.idx}" value="${oi}" onchange="clearWrong(${q.idx})"> ${opt}
+            </label>
+          `).join('')}
+        </div>
+        <button class="btn-check" onclick="check(${q.idx}, ${q.correct})">Verificar</button>
+        <div class="explanation" id="exp${q.idx}">💡 ${q.exp}</div>
+      </div>`;
+    });
+  }
+  container.innerHTML = html;
+}
+
+function clearWrong(idx) {
+  document.querySelectorAll(`[id^="lbl${idx}_"]`).forEach(l => {
+    l.classList.remove('wrong','correct','reveal-correct');
+  });
+}
+
+let answered = new Set();
+let correct_count = 0;
+
+function check(idx, correct) {
+  if (answered.has(idx)) return;
+  const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+  if (!selected) { alert('Selecione uma resposta!'); return; }
+
+  const val = parseInt(selected.value);
+  answered.add(idx);
+
+  if (val === correct) {
+    document.getElementById(`lbl${idx}_${val}`).classList.add('correct');
+    correct_count++;
+  } else {
+    document.getElementById(`lbl${idx}_${val}`).classList.add('wrong');
+    document.getElementById(`lbl${idx}_${correct}`).classList.add('reveal-correct');
+  }
+  document.getElementById(`exp${idx}`).style.display = 'block';
+  document.getElementById('score').textContent = correct_count;
+}
+
+function resetAll() {
+  answered.clear();
+  correct_count = 0;
+  document.getElementById('score').textContent = 0;
+  renderQuestions();
+}
+
+renderQuestions();
+</script>
+</body>
+</html>
