@@ -68,14 +68,15 @@ O site reúne todos os 14 tópicos da ementa em um único arquivo HTML, sem depe
 git clone https://github.com/Gustavolg95/revisao_eng_software.git
 
 # Abra o arquivo no navegador
-# Basta dar dois cliques em estudo_es.html
+# Basta dar dois cliques em index.html
 ```
 
 ---
 
-## 👨‍💻 Autor
+## 👨‍💻 Autores
 
-**Gustavo** — [@Gustavolg95](https://github.com/Gustavolg95)
+**Marcos Alvarez** — [@marcosalvarez7](https://github.com/marcosalvarez7) — Desenvolvimento do material
 
-Estudante de Ciência de Dados e Machine Learning — CEUB  
-Portfólio: [PortfolioHUB](https://github.com/Gustavolg95/PortfolioHUB)
+**Gustavo Lisboa** — [@Gustavolg95](https://github.com/Gustavolg95) — Publicação e hospedagem
+
+Estudantes de Ciência de Dados e Machine Learning — CEUB  
